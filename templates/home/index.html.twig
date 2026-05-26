@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% set active_page = 'home' %}
+
+{% block title %}Padel{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/acceuil.css') }}">
+{% endblock %}
+
+{% block body %}
+    <section class="bg-container">
+        <div class="bg-container_content">
+            <div class="text-12">
+                Rejoignez-nous pour une expérience de jeu inoubliable.
+            </div>
+            <button class="start-btn1 primary-btn">
+                RÉSERVE TON TERRAIN EN LIGNE
+            </button>
+        </div>
+    </section>
+    <br><br>
+    <h2 class="section-title">Découvrez Nos Services</h2>
+    <section class="services container mt-5">
+        <div class="service-item">
+            <h3>4 Terrains</h3>
+            <p>4 terrains de padel dernière génération pour des matchs intenses.</p>
+            <br>
+            <img src="{{ asset('images/terrain.png') }}" alt="4 Terrains de padel dernière génération">
+        </div>
+        <div class="service-item">
+            <h3>Coaching</h3>
+            <p>Des coachs experts pour élever votre niveau de jeu.</p>
+            <br>
+            <img src="{{ asset('images/coaching.png') }}" alt="Coaching par des coachs experts">
+        </div>
+        <div class="service-item">
+            <h3>Boutique</h3>
+            <p>Tout l'équipement nécessaire pour jouer comme un pro.</p>
+            <br>
+            <img src="{{ asset('images/boutique.png') }}" alt="Boutique avec équipement de padel">
+        </div>
+        <div class="service-item">
+            <h3>Padel House</h3>
+            <p>Détendez-vous après le match dans notre Club House.</p>
+            <br>
+            <img src="{{ asset('images/cafe.png') }}" alt="Padel House Club House pour se détendre">
+        </div>
+    </section>
+
+    <section class="tournois-section container mt-5">
+        <h2 class="section-title">Prochains Tournois</h2>
+        <div class="tournoi-card">
+            <div class="tournoi-date">
+                <span class="day">15</span>
+                <span class="month">FÉV</span>
+            </div>
+            <div class="tournoi-info">
+                <h4>Open Casa del Padel - Catégorie P250</h4>
+                <p>Inscriptions ouvertes aux duos masculins et mixtes. 32 équipes max.</p>
+            </div>
+            <button class="btn-tournoi">S'inscrire</button>
+        </div>
+
+        <div class="tournoi-card">
+            <div class="tournoi-date color-alt">
+                <span class="day">28</span>
+                <span class="month">FÉV</span>
+            </div>
+            <div class="tournoi-info">
+                <h4>Tournoi Nocturne "Glow in the Dark"</h4>
+                <p>Une expérience unique sous lumières UV avec ambiance DJ.</p>
+            </div>
+            <button class="btn-tournoi">S'inscrire</button>
+        </div>
+    </section>
+
+    <section class="packs-section container mt-5">
+        <h2 class="section-title">Nos Packs & Offres</h2>
+        <div class="packs-grid">
+            <div class="pack-item">
+                <div class="pack-header">Pack Découverte</div>
+                <div class="pack-price">45 DT <span>/ pers</span></div>
+                <ul class="pack-features">
+                    <li>3 Sessions de 90min</li>
+                    <li>Prêt de raquette offert</li>
+                    <li>Validité 1 mois</li>
+                </ul>
+                <button class="pack-btn">Acheter</button>
+            </div>
+
+            <div class="pack-item recommended">
+                <div class="pack-tag">Plus Populaire</div>
+                <div class="pack-header">Pack Challenger</div>
+                <div class="pack-price">120 DT <span>/ pers</span></div>
+                <ul class="pack-features">
+                    <li>10 Sessions de 90min</li>
+                    <li>-10% sur la boutique</li>
+                    <li>Validité 3 mois</li>
+                </ul>
+                <button class="pack-btn">Acheter</button>
+            </div>
+
+            <div class="pack-item">
+                <div class="pack-header">Pack Elite</div>
+                <div class="pack-price">300 DT <span>/ pers</span></div>
+                <ul class="pack-features">
+                    <li>Accès Illimité (Heures Creuses)</li>
+                    <li>Priorité de réservation</li>
+                    <li>T-shirt club offert</li>
+                </ul>
+                <button class="pack-btn">Acheter</button>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% set active_page = 'login' %}
+
+{% block title %}Log in - Padel Badeli 7yeti{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
+{% endblock %}
+
+{% block body %}
+    <section class="on">
+        <div class="login-container">
+            <div class="login-left">
+                <div class="logo">
+                    <i class="fas fa-table-tennis"></i>
+                    <h1>Padel Badeli 7yeti</h1>
+                </div>
+                <div class="welcome-text">
+                    <h2>Bon retour parmi nous</h2>
+                    <p>Connectez-vous pour réserver des terrains, gérer vos adhésions et profiter du jeu que vous aimez.</p>
+                </div>
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Système de réservation facile</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-user-friends"></i>
+                        <span>Trouvez des partenaires et organisez des matchs</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-check"></i>
+                        <span>Niveaux fiables et testés</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="login-right">
+                {# TODO: action="{{ path('app_login') }}" method="post" and CSRF token #}
+                <form class="login-form" id="loginForm" action="" method="post">
+                    <h3>Connexion</h3>
+                    <div class="form-group" id="emailGroup">
+                        <label for="email">Adresse E-mail</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="Entrez votre adresse mail" required>
+                        </div>
+                        <div class="error-message">Veuillez entrer une adresse mail valide</div>
+                    </div>
+
+                    <div class="form-group" id="passwordGroup">
+                        <label for="password">Mot de passe</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Entrez votre mot de passe" required>
+                        </div>
+                        <div class="error-message">Le mot de passe doit contenir au moins 6 caractères</div>
+                    </div>
+
+                    <div class="options">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember" name="_remember_me">
+                            <label for="remember">Se souvenir de moi</label>
+                        </div>
+                        {# TODO: route for forgot-password page #}
+                        <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-sign-in-alt"></i> Se connecter
+                    </button>
+
+                    <div class="signup-link">
+                        {# TODO: href="{{ path('app_signup') }}" #}
+                        Vous n'avez pas de compte ? <a href="#">S'inscrire maintenant</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/login.js') }}"></script>
+{% endblock %}
