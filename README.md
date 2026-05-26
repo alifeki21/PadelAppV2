@@ -8,7 +8,7 @@ Symfony 7.4 rewrite of our padel booking project.
 
 ```bash
 # 1. Clone the repo
-git clone <repo-url>
+git clone [<repo-url>](https://github.com/alifeki21/PadelAppV2.git)
 cd padelappv2
 
 # 2. Install dependencies
