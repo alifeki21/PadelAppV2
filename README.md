@@ -30,10 +30,10 @@ DATABASE_URL="mysql://root:@127.0.0.1:3306/padelappv2?serverVersion=10.4.32-Mari
 # 4. Start MySQLserver
 
 # 5. Create the database
-php bin/console doctrine:database:create
+symfony console doctrine:database:create
 
 # 6. Run migrations (this creates all the tables)
-php bin/console doctrine:migrations:migrate
+symfony console doctrine:migrations:migrate
 
 # 7. Start the Symfony dev server
 symfony server:start
@@ -50,7 +50,7 @@ Every time you start working:
 ```bash
 git pull origin main                          # get latest code
 composer install                              # in case dependencies changed
-php bin/console doctrine:migrations:migrate   # in case someone added entities
+symfony console doctrine:migrations:migrate   # in case someone added entities
 symfony server:start                          # start working
 ```
 
@@ -70,15 +70,15 @@ Example: `feature/ali-reservation-system`
 
 ```bash
 # Clear cache if something feels weird
-php bin/console cache:clear
+symfony console cache:clear
 
 # See all routes
-php bin/console debug:router
+symfony console debug:router
 
 # Drop and recreate the DB (DEV ONLY — destroys all data)
-php bin/console doctrine:database:drop --force
-php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
+symfony console doctrine:database:drop --force
+symfony console doctrine:database:create
+symfony console doctrine:migrations:migrate
 ```
 
 ---
