@@ -4,8 +4,7 @@
 <header class="site-header">
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            {# TODO: replace href with {{ path('app_home') }} once HomeController exists #}
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="{{ path('app_home') }}">
                 <img src="{{ asset('images/padel house.png') }}" alt="Padel House">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -17,29 +16,34 @@
             <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        {# TODO: href="{{ path('app_home') }}" #}
-                        <a class="nav-link{% if active == 'home' %} active{% endif %}" href="#">Accueil</a>
+                        <a class="nav-link{% if active == 'home' %} active{% endif %}" href="{{ path('app_home') }}">Accueil</a>
                     </li>
                     <li class="nav-item">
-                        {# TODO: href="{{ path('app_reservation') }}" #}
                         <a class="nav-link{% if active == 'reservation' %} active{% endif %}" href="#">Réservation</a>
                     </li>
                     <li class="nav-item">
-                        {# TODO: href="{{ path('app_tournois') }}" #}
                         <a class="nav-link{% if active == 'tournois' %} active{% endif %}" href="#">Tournois</a>
                     </li>
                     <li class="nav-item">
-                        {# TODO: href="{{ path('app_contact') }}" #}
                         <a class="nav-link{% if active == 'contact' %} active{% endif %}" href="#">Contact</a>
                     </li>
-                    <li class="nav-item">
-                        {# TODO: href="{{ path('app_login') }}" #}
-                        <a class="nav-link{% if active == 'login' %} active{% endif %}" href="#">Connexion</a>
-                    </li>
-                    <li class="nav-item">
-                        {# TODO: href="{{ path('app_signup') }}" #}
-                        <a class="nav-link{% if active == 'signup' %} active{% endif %}" href="#">S'inscrire</a>
-                    </li>
+
+                    {# Show logout button if logged in, otherwise show Login / Sign-up links #}
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <span class="nav-link">👋 {{ app.user.firstName }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link{% if active == 'login' %} active{% endif %}" href="{{ path('app_login') }}">Connexion</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link{% if active == 'signup' %} active{% endif %}" href="{{ path('app_signup') }}">S'inscrire</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

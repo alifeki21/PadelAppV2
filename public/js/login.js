@@ -1,15 +1,18 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('loginForm');
+    if (!loginForm) return;
+
     const patterns = {
         email: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
     };
+
     const fields = [
         {
             id: 'email',
             groupId: 'emailGroup',
             validate: (value) => {
-                if (!value.trim()) return 'Email is required';
-                if (!patterns.email.test(value)) return 'Please enter a valid email address';
+                if (!value.trim()) return 'L\'adresse e-mail est requise';
+                if (!patterns.email.test(value)) return 'Veuillez entrer une adresse e-mail valide';
                 return '';
             }
         },
@@ -17,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             id: 'password',
             groupId: 'passwordGroup',
             validate: (value) => {
-                if (!value) return 'Password is required';
+                if (!value) return 'Le mot de passe est requis';
                 return '';
             }
         }
@@ -26,34 +29,38 @@ document.addEventListener('DOMContentLoaded', function() {
     function validateField(field) {
         const input = document.getElementById(field.id);
         const group = document.getElementById(field.groupId);
-        const value = input.value;
-        const errorMessage = field.validate(value);
+        if (!input || !group) return true;
+
+        const errorMessage = field.validate(input.value);
+        const errorElement = group.querySelector('.error-message');
 
         if (errorMessage) {
             group.classList.remove('success');
             group.classList.add('error');
-            const errorElement = group.querySelector('.error-message');
-            errorElement.textContent = errorMessage;
+            if (errorElement) errorElement.textContent = errorMessage;
             return false;
-        } else {
-            group.classList.remove('error');
-            group.classList.add('success');
-            return true;
         }
+        group.classList.remove('error');
+        group.classList.add('success');
+        return true;
     }
 
     fields.forEach(field => {
         const input = document.getElementById(field.id);
-        input.addEventListener('input', () => validateField(field));
-        input.addEventListener('blur', () => validateField(field));
+        if (input) {
+            input.addEventListener('input', () => validateField(field));
+            input.addEventListener('blur',  () => validateField(field));
+        }
     });
-
-    function addPasswordToggle() {
+    (function addPasswordToggle() {
         const input = document.getElementById('password');
         const group = document.getElementById('passwordGroup');
+        if (!input || !group) return;
+
         const eyeIcon = document.createElement('i');
         eyeIcon.className = 'fas fa-eye password-toggle';
-        eyeIcon.addEventListener('click', function() {
+        eyeIcon.style.cursor = 'pointer';
+        eyeIcon.addEventListener('click', function () {
             if (input.type === 'password') {
                 input.type = 'text';
                 eyeIcon.className = 'fas fa-eye-slash password-toggle';
@@ -62,121 +69,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 eyeIcon.className = 'fas fa-eye password-toggle';
             }
         });
-        group.querySelector('.input-with-icon').appendChild(eyeIcon);
-    }
-
-    addPasswordToggle();
-
-    function checkRememberMe() {
-        const rememberedEmail = localStorage.getItem('rememberedEmail');
-        const rememberedPassword = localStorage.getItem('rememberedPassword');
-        const rememberCheckbox = document.getElementById('remember');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        
-        if (rememberedEmail) {
-            emailInput.value = rememberedEmail;
-            validateField(fields[0]);
-            rememberCheckbox.checked = true;
-        } else {
-            emailInput.value = '';
-        }
-        
-        if (rememberedPassword) {
-            passwordInput.value = rememberedPassword;
-            validateField(fields[1]);
-            rememberCheckbox.checked = true;
-        } else {
-            passwordInput.value = '';
-        }
-    }
-
-    checkRememberMe();
-
-    loginForm.addEventListener('submit', function(e) {
-        e.preventDefault();
+        const wrapper = group.querySelector('.input-with-icon');
+        if (wrapper) wrapper.appendChild(eyeIcon);
+    })();
+    loginForm.addEventListener('submit', function (e) {
         let isValid = true;
-        
-        fields.forEach(field => {
-            if (!validateField(field)) {
-                isValid = false;
-            }
-        });
+        fields.forEach(field => { if (!validateField(field)) isValid = false; });
 
-        if (isValid) {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const rememberMe = document.getElementById('remember').checked;
-
-            if (rememberMe) {
-                localStorage.setItem('rememberedEmail', email);
-                localStorage.setItem('rememberedPassword', password);
-            } else {
-                localStorage.removeItem('rememberedEmail');
-                localStorage.removeItem('rememberedPassword');
-                document.getElementById('email').value = '';
-                document.getElementById('password').value = '';
-                document.getElementById('remember').checked = false;
-            }
-
-            const formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', password);
-
-            const submitBtn = document.querySelector('.submit-btn');
-            const originalText = submitBtn.innerHTML;
+        if (!isValid) {
+            e.preventDefault();
+            const firstError = document.querySelector('.form-group.error');
+            if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        const submitBtn = loginForm.querySelector('.submit-btn');
+        if (submitBtn) {
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connexion...';
             submitBtn.disabled = true;
-
-            fetch('../php/login.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.status === 'success') {
-                    alert('Connexion réussie ! Bon retour chez Padel Badeli 7yeti !');
-                    loginForm.reset();
-                    fields.forEach(field => {
-                        const group = document.getElementById(field.groupId);
-                        if(group) group.classList.remove('error', 'success');
-                    });
-                    window.location.href = result.redirect;
-                } else {
-                    const emailGroup = document.getElementById('emailGroup');
-                    const passwordGroup = document.getElementById('passwordGroup');
-                    emailGroup.classList.add('error');
-                    passwordGroup.classList.add('error');
-                    
-                    const emailError = emailGroup.querySelector('.error-message');
-                    const passwordError = passwordGroup.querySelector('.error-message');
-                    emailError.textContent = result.message || 'E-mail ou mot de passe incorrect';
-                    passwordError.textContent = result.message || 'E-mail ou mot de passe incorrect';
-                    
-                    [emailGroup, passwordGroup].forEach(group => {
-                        group.style.animation = 'shake 0.5s';
-                        setTimeout(() => {
-                            group.style.animation = '';
-                        }, 500);
-                    });
-                }
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Une erreur est survenue lors de la communication avec le serveur.');
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            });
-        } else {
-            const firstError = document.querySelector('.form-group.error');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
         }
     });
-
     const style = document.createElement('style');
     style.textContent = `
         @keyframes shake {

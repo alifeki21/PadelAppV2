@@ -37,14 +37,24 @@
             </div>
 
             <div class="login-right">
-                {# TODO: action="{{ path('app_login') }}" method="post" and CSRF token #}
-                <form class="login-form" id="loginForm" action="" method="post">
+                <form class="login-form" id="loginForm" action="{{ path('app_login') }}" method="post">
                     <h3>Connexion</h3>
+
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        </div>
+                    {% endif %}
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
                     <div class="form-group" id="emailGroup">
                         <label for="email">Adresse E-mail</label>
                         <div class="input-with-icon">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Entrez votre adresse mail" required>
+                            <input type="email" id="email" name="email" class="form-control"
+                                   placeholder="Entrez votre adresse mail"
+                                   value="{{ last_username }}" required autocomplete="email">
                         </div>
                         <div class="error-message">Veuillez entrer une adresse mail valide</div>
                     </div>
@@ -53,7 +63,8 @@
                         <label for="password">Mot de passe</label>
                         <div class="input-with-icon">
                             <i class="fas fa-lock"></i>
-                            <input type="password" id="password" name="password" class="form-control" placeholder="Entrez votre mot de passe" required>
+                            <input type="password" id="password" name="password" class="form-control"
+                                   placeholder="Entrez votre mot de passe" required autocomplete="current-password">
                         </div>
                         <div class="error-message">Le mot de passe doit contenir au moins 6 caractères</div>
                     </div>
@@ -63,7 +74,6 @@
                             <input type="checkbox" id="remember" name="_remember_me">
                             <label for="remember">Se souvenir de moi</label>
                         </div>
-                        {# TODO: route for forgot-password page #}
                         <a href="#" class="forgot-password">Mot de passe oublié ?</a>
                     </div>
 
@@ -72,8 +82,7 @@
                     </button>
 
                     <div class="signup-link">
-                        {# TODO: href="{{ path('app_signup') }}" #}
-                        Vous n'avez pas de compte ? <a href="#">S'inscrire maintenant</a>
+                        Vous n'avez pas de compte ? <a href="{{ path('app_signup') }}">S'inscrire maintenant</a>
                     </div>
                 </form>
             </div>
