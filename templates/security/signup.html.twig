@@ -12,8 +12,10 @@
     <section class="on">
         <div class="signup-container">
             <div class="signup-form-container">
-                {# TODO: action="{{ path('app_signup') }}" method="post" and CSRF token #}
-                <form class="signup-form" id="signupForm" action="" method="post">
+                {{ form_start(registrationForm, {
+                    'attr': {'class': 'signup-form', 'id': 'signupForm'}
+                }) }}
+
                     <div class="form-header">
                         <div class="logo">
                             <i class="fas fa-table-tennis"></i>
@@ -23,71 +25,86 @@
                         <p>Rejoignez notre communauté pour réserver des terrains et vous connecter avec d'autres joueurs.</p>
                     </div>
 
+                    {{ form_errors(registrationForm) }}
+
                     <div class="form-row">
                         <div class="form-group" id="firstNameGroup">
-                            <label for="firstName">Prénom</label>
+                            <label for="registration_form_firstName">Prénom</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Entrez votre prénom" required>
+                                {{ form_widget(registrationForm.firstName, {
+                                    'attr': {'class': 'form-control', 'placeholder': 'Entrez votre prénom'}
+                                }) }}
                             </div>
-                            <div class="error-message">Le prénom est requis</div>
+                            {{ form_errors(registrationForm.firstName) }}
                         </div>
 
                         <div class="form-group" id="lastNameGroup">
-                            <label for="lastName">Nom</label>
+                            <label for="registration_form_lastName">Nom</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Entrez votre nom" required>
+                                {{ form_widget(registrationForm.lastName, {
+                                    'attr': {'class': 'form-control', 'placeholder': 'Entrez votre nom'}
+                                }) }}
                             </div>
-                            <div class="error-message">Le nom est requis</div>
+                            {{ form_errors(registrationForm.lastName) }}
                         </div>
                     </div>
 
                     <div class="form-group" id="emailGroup">
-                        <label for="email">Adresse E-mail</label>
+                        <label for="registration_form_email">Adresse E-mail</label>
                         <div class="input-with-icon">
                             <i class="fas fa-envelope"></i>
-                            <input type="email" id="email" name="email" class="form-control" placeholder="Entrez votre adresse mail" required>
+                            {{ form_widget(registrationForm.email, {
+                                'attr': {'class': 'form-control', 'placeholder': 'Entrez votre adresse mail'}
+                            }) }}
                         </div>
-                        <div class="error-message">Veuillez entrer une adresse mail valide</div>
+                        {{ form_errors(registrationForm.email) }}
                     </div>
 
                     <div class="form-group" id="phoneGroup">
-                        <label for="phone">Numéro de téléphone</label>
+                        <label for="registration_form_phone">Numéro de téléphone</label>
                         <div class="input-with-icon">
                             <i class="fas fa-phone"></i>
-                            <input type="tel" id="phone" name="phone" class="form-control" placeholder="Entrez votre numéro de téléphone" required>
+                            {{ form_widget(registrationForm.phone, {
+                                'attr': {'class': 'form-control', 'placeholder': 'Entrez votre numéro de téléphone'}
+                            }) }}
                         </div>
-                        <div class="error-message">Veuillez entrer un numéro de téléphone valide</div>
+                        {{ form_errors(registrationForm.phone) }}
                     </div>
 
                     <div class="form-row">
                         <div class="form-group" id="passwordGroup">
-                            <label for="password">Mot de passe</label>
+                            <label for="registration_form_plainPassword_first">Mot de passe</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" id="password" name="password" class="form-control" placeholder="Créez un mot de passe" required>
+                                {{ form_widget(registrationForm.plainPassword.first, {
+                                    'attr': {'class': 'form-control', 'placeholder': 'Créez un mot de passe', 'autocomplete': 'new-password'}
+                                }) }}
                             </div>
-                            <div class="error-message">Le mot de passe doit contenir au moins 8 caractères</div>
                         </div>
 
                         <div class="form-group" id="confirmPasswordGroup">
-                            <label for="confirmPassword">Confirmer le mot de passe</label>
+                            <label for="registration_form_plainPassword_second">Confirmer le mot de passe</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-lock"></i>
-                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" placeholder="Confirmez votre mot de passe" required>
+                                {{ form_widget(registrationForm.plainPassword.second, {
+                                    'attr': {'class': 'form-control', 'placeholder': 'Confirmez votre mot de passe', 'autocomplete': 'new-password'}
+                                }) }}
                             </div>
-                            <div class="error-message">Les mots de passe ne correspondent pas</div>
+                            {{ form_errors(registrationForm.plainPassword) }}
                         </div>
                     </div>
 
                     <div class="form-group" id="levelGroup">
-                        <label for="level">Niveau de compétence (1-10)</label>
+                        <label for="registration_form_skillLevel">Niveau de compétence (1-10)</label>
                         <div class="input-with-icon">
                             <i class="fas fa-chart-bar"></i>
-                            <input type="number" id="level" name="level" class="form-control" placeholder="Entrez votre niveau (ex: 5.5)" min="1" max="10" step="0.1" required>
+                            {{ form_widget(registrationForm.skillLevel, {
+                                'attr': {'class': 'form-control', 'placeholder': 'Entrez votre niveau (ex: 5.5)', 'min': 1, 'max': 10, 'step': 0.1}
+                            }) }}
                         </div>
-                        <div class="error-message">Veuillez entrer un nombre entre 1 et 10</div>
+                        {{ form_errors(registrationForm.skillLevel) }}
                         <div class="skill-level-hint">
                             <small>1 = Débutant, 10 = Professionnel (les décimales comme 3.5, 7.2 sont autorisées)</small>
                         </div>
@@ -95,54 +112,47 @@
 
                     <div class="form-row">
                         <div class="form-group" id="positionGroup">
-                            <label for="position">Position préférée</label>
+                            <label for="registration_form_preferredPosition">Position préférée</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-arrows-alt-h"></i>
-                                <select id="position" name="position" class="form-control" required>
-                                    <option value="" disabled selected>Choisir une position</option>
-                                    <option value="left">Gauche</option>
-                                    <option value="right">Droite</option>
-                                    <option value="both">Les deux</option>
-                                </select>
+                                {{ form_widget(registrationForm.preferredPosition, {
+                                    'attr': {'class': 'form-control'}
+                                }) }}
                             </div>
-                            <div class="error-message">Veuillez choisir une position</div>
+                            {{ form_errors(registrationForm.preferredPosition) }}
                         </div>
 
                         <div class="form-group" id="handGroup">
-                            <label for="hand">Main de jeu</label>
+                            <label for="registration_form_playingHand">Main de jeu</label>
                             <div class="input-with-icon">
                                 <i class="fas fa-hand-paper"></i>
-                                <select id="hand" name="hand" class="form-control" required>
-                                    <option value="" disabled selected>Choisir une main</option>
-                                    <option value="right">Droitier</option>
-                                    <option value="left">Gaucher</option>
-                                </select>
+                                {{ form_widget(registrationForm.playingHand, {
+                                    'attr': {'class': 'form-control'}
+                                }) }}
                             </div>
-                            <div class="error-message">Veuillez choisir une main</div>
+                            {{ form_errors(registrationForm.playingHand) }}
                         </div>
                     </div>
 
                     <div class="form-checkbox">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms">
+                        {{ form_widget(registrationForm.agreeTerms) }}
+                        <label for="registration_form_agreeTerms">
                             J'accepte les
-                            {# TODO: href="{{ path('app_terms') }}" #}
-                            <a href="#">Conditions d'utilisation</a> et la
-                            {# TODO: href="{{ path('app_privacy') }}" #}
-                            <a href="#">Politique de confidentialité</a>
+                            <a href="{{ path('app_terms') }}" target="_blank" class="legal-link">Conditions d'utilisation</a> et la
+                            <a href="{{ path('app_privacy') }}" target="_blank" class="legal-link">Politique de confidentialité</a>
                         </label>
                     </div>
-                    <div class="error-message" id="termsError">Vous devez accepter les conditions d'utilisation</div>
+                    {{ form_errors(registrationForm.agreeTerms) }}
 
                     <button type="submit" class="submit-btn" id="submitBtn">
                         <i class="fas fa-user-plus"></i> Créer mon compte
                     </button>
 
                     <div class="login-link">
-                        {# TODO: href="{{ path('app_login') }}" #}
-                        Déjà inscrit ? <a href="#">Connectez-vous ici</a>
+                        Déjà inscrit ? <a href="{{ path('app_login') }}">Connectez-vous ici</a>
                     </div>
-                </form>
+
+                {{ form_end(registrationForm) }}
             </div>
         </div>
     </section>

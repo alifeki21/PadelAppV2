@@ -3,6 +3,18 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.form-checkbox {
+  margin-bottom: 20px;
+}
+.form-checkbox a.legal-link {
+  color: #1e40af;
+  text-decoration: underline;
+  font-weight: 500;
+}
+.form-checkbox a.legal-link:hover {
+  color: #3b82f6;
+}
 :root {
   --deep-blue: #0f172a;
   --main-blue: #1e40af;
