@@ -1,0 +1,84 @@
+{# Standalone page — original feedback.html had no shared header/footer #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padel Badeli 7yeti - Feedback</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/feedback.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="titre">Padel Badeli 7yeti</div>
+            <div class="soustitre">Pour une meilleure expérience de padel</div>
+        </div>
+
+        <div class="box1">
+            <h3>Pourquoi votre avis compte</h3>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> Amélioration continue de nos services</li>
+                <li><i class="fas fa-check-circle"></i> Adaptation à vos besoins spécifiques</li>
+                <li><i class="fas fa-check-circle"></i> Création d'une meilleure communauté</li>
+            </ul>
+        </div>
+
+        <div class="box2">
+            <h2 class="box2_titre">Feedback</h2>
+            <p class="box2_soustitre">Votre avis nous aide à améliorer notre plateforme et vos expériences de jeu.</p>
+
+            {# TODO: add action="{{ path('app_feedback_submit') }}" once FeedbackController exists #}
+            <form id="feedbackForm" action="" method="post">
+                <div class="elmts_form">
+                    <label for="email">Email Address (optionnel)</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your email address">
+                </div>
+
+                <div class="elmts_form">
+                    <label for="feedbackType">Type de feedback</label>
+                    <select id="feedbackType" name="feedbackType">
+                        <option value="">Sélectionnez un type</option>
+                        <option value="general">Commentaire général</option>
+                        <option value="booking">Système de réservation</option>
+                        <option value="partner">Recherche de partenaires</option>
+                        <option value="level">Système de niveaux</option>
+                        <option value="bug">Rapport de bug</option>
+                        <option value="suggestion">Suggestion d'amélioration</option>
+                    </select>
+                </div>
+
+                <div class="elmts_form">
+                    <label>Évaluation globale</label>
+                    <div class="eval">
+                        {% for item in [
+                            { value: 1, icon: '😞', text: 'Mauvais' },
+                            { value: 2, icon: '🙁', text: 'Moyen' },
+                            { value: 3, icon: '😐', text: 'Correct' },
+                            { value: 4, icon: '🙂', text: 'Bon' },
+                            { value: 5, icon: '😄', text: 'Excellent' }
+                        ] %}
+                            <div class="eval_item" data-eval="{{ item.value }}">
+                                <div class="eval_icon">{{ item.icon }}</div>
+                                <div class="eval_text">{{ item.text }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="elmts_form">
+                    <label for="message">Votre feedback</label>
+                    <textarea id="message" name="message" placeholder="Décrivez votre expérience, suggestions ou problèmes rencontrés..."></textarea>
+                </div>
+
+                <button type="submit" class="btn">Envoyer le Feedback</button>
+            </form>
+
+            <div class="retour">
+                Retour à l'accueil ? <a href="{{ path('app_home') }}">Cliquez ici</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{# Standalone page — original reportlevel.html had no shared header/footer #}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padel Badeli 7yeti - Signalement</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/reportlevel.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="titre">Padel Badeli 7yeti</div>
+            <div class="soustitre">Pour une meilleure expérience de padel</div>
+        </div>
+
+        <div class="box1">
+            <h3>Dans quel cas doit-on signaler un joueur</h3>
+            <ul>
+                <li><i class="fas fa-times-circle" style="color: #e53e3e;"></i> Mauvais comportement du joueur</li>
+                <li><i class="fas fa-times-circle" style="color: #e53e3e;"></i> Niveau erroné du joueur</li>
+            </ul>
+        </div>
+
+        <div class="box2">
+            {# TODO: add action="{{ path('app_report_submit') }}" once ReportController exists #}
+            <form id="feedbackForm" action="" method="post">
+                <div class="elmts_form">
+                    <label for="fullName">Nom et Prénom</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="Entrer le Nom et Prénom du joueur">
+                </div>
+                <div class="elmts_form">
+                    <label for="phoneNumber">Numéro de téléphone</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Entrer le Numéro de téléphone du joueur">
+                </div>
+
+                <div class="elmts_form">
+                    <label for="feedbackType">Type de signalement</label>
+                    <select id="feedbackType" name="feedbackType">
+                        <option value="">Sélectionnez un type</option>
+                        <option value="comportement">Mauvais comportement</option>
+                        <option value="niveau">Correction du niveau</option>
+                    </select>
+                </div>
+                <div class="elmts_form">
+                    <label>Corrigez le niveau du joueur</label>
+                </div>
+                <div class="elmts_form">
+                    <div class="niveau">
+                        <div class="elmts_form">
+                            <label for="indicatedLevel">Niveau indiqué</label>
+                            <input type="text" id="indicatedLevel" name="indicatedLevel" placeholder="">
+                        </div>
+                        <div class="elmts_form">
+                            <label for="actualLevel">Niveau réel</label>
+                            <input type="text" id="actualLevel" name="actualLevel" placeholder="">
+                        </div>
+                    </div>
+                </div>
+                <div class="elmts_form">
+                    <label for="levelReason">Expliquez pourquoi</label>
+                    <textarea id="levelReason" name="levelReason" placeholder="Pourquoi doit-on changer le niveau de ce joueur"></textarea>
+                </div>
+                <div class="elmts_form">
+                    <label for="behaviorReport">Signalement pour mauvais comportement</label>
+                    <textarea id="behaviorReport" name="behaviorReport" placeholder="Dites-nous ce qui s'est passé"></textarea>
+                </div>
+                <button type="submit" class="btn">Envoyer le signalement</button>
+            </form>
+
+            <div class="retour">
+                Retour à l'accueil ? <a href="{{ path('app_home') }}">Cliquez ici</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

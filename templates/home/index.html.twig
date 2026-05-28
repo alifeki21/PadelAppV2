@@ -14,9 +14,10 @@
             <div class="text-12">
                 Rejoignez-nous pour une expérience de jeu inoubliable.
             </div>
-            <button class="start-btn1 primary-btn">
+            {# TODO: link to path('app_reservation') once ReservationController exists #}
+            <a href="#" class="start-btn1 primary-btn">
                 RÉSERVE TON TERRAIN EN LIGNE
-            </button>
+            </a>
         </div>
     </section>
     <br><br>
@@ -59,7 +60,7 @@
                 <h4>Open Casa del Padel - Catégorie P250</h4>
                 <p>Inscriptions ouvertes aux duos masculins et mixtes. 32 équipes max.</p>
             </div>
-            <button class="btn-tournoi">S'inscrire</button>
+            <a href="{{ path('app_tournaments_inscription') }}" class="btn-tournoi">S'inscrire</a>
         </div>
 
         <div class="tournoi-card">
@@ -71,7 +72,7 @@
                 <h4>Tournoi Nocturne "Glow in the Dark"</h4>
                 <p>Une expérience unique sous lumières UV avec ambiance DJ.</p>
             </div>
-            <button class="btn-tournoi">S'inscrire</button>
+            <a href="{{ path('app_tournaments_inscription') }}" class="btn-tournoi">S'inscrire</a>
         </div>
     </section>
 
