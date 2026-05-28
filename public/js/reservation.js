@@ -41,12 +41,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 function checkAuthentication() {
-    return fetch('../php/auth_status.php')
+    return fetch('/auth/status')
         .then(response => response.json())
         .then(data => {
             if (!data.authenticated) {
                 alert('Il faut s\'authentifier d\'abord pour réserver un terrain.');
-                window.location.href = '../php/login.php';
+                window.location.href = '/login';
                 return false;
             }
 
@@ -56,7 +56,7 @@ function checkAuthentication() {
         .catch(error => {
             console.error('Authentication check failed:', error);
             alert('Il faut s\'authentifier d\'abord pour réserver un terrain.');
-            window.location.href = '../php/login.php';
+            window.location.href = '/login';
             return false;
         });
 }
@@ -323,7 +323,7 @@ function loadBookedSlots() {
         reservation_date: reservationState.selectedDate
     });
 
-    fetch(`../php/process_reservation.php?${params.toString()}`)
+    fetch(`/reservation/slots?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
             bookedSlots = data.success ? data.bookedSlots : [];
@@ -425,10 +425,7 @@ function confirmBooking() {
     formData.append('requirements', reservationState.requirements || '');
 
     // Envoi asynchrone vers PHP
-    fetch('../php/process_reservation.php', {
-        method: 'POST',
-        body: formData
-    })
+    fetch('/reservation/save', { method: 'POST', body: formData })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
@@ -446,7 +443,7 @@ function confirmBooking() {
         } else {
             if (data.loginRequired) {
                 alert(data.message);
-                window.location.href = '../php/login.php';
+                window.location.href = '/login';
                 return;
             }
             alert('Erreur : ' + data.message);
