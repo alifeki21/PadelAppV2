@@ -19,15 +19,13 @@
                         <a class="nav-link{% if active == 'home' %} active{% endif %}" href="{{ path('app_home') }}">Accueil</a>
                     </li>
                     <li class="nav-item">
-                        {# TODO: replace with path('app_reservation') once ReservationController exists #}
-                        <a class="nav-link{% if active == 'reservation' %} active{% endif %}" href="#">Réservation</a>
+                        <a class="nav-link{% if active == 'reservation' %} active{% endif %}" href="{{ path('app_reservation') }}">Réservation</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if active == 'tournois' %} active{% endif %}" href="{{ path('app_tournaments_index') }}">Tournois</a>
                     </li>
                     <li class="nav-item">
-                        {# TODO: replace with path('app_contact') once ContactController exists #}
-                        <a class="nav-link{% if active == 'contact' %} active{% endif %}" href="#">Contact</a>
+                        <a class="nav-link{% if active == 'contact' %} active{% endif %}" href="{{ path('app_contact') }}">Contact</a>
                     </li>
 
                     {# Show logout button if logged in, otherwise show Login / Sign-up links #}

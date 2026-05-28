@@ -21,11 +21,9 @@
                 <br>
                 <ul>
                     <li><a href="{{ path('app_home') }}">Accueil</a></li>
-                    {# TODO: replace with path('app_reservation') once ReservationController exists #}
-                    <li><a href="#">Réservation</a></li>
+                    <li><a href="{{ path('app_reservation') }}">Réservation</a></li>
                     <li><a href="{{ path('app_tournaments_index') }}">Tournois</a></li>
-                    {# TODO: replace with path('app_contact') once ContactController exists #}
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="{{ path('app_contact') }}">Contact</a></li>
                 </ul>
             </div>
         </div>

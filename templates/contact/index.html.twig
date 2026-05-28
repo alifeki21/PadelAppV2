@@ -37,15 +37,22 @@
         <div class="contact-wrapper">
             <div class="contact-container">
                 <h1>Contactez-nous</h1>
-                {# TODO: add action="{{ path('app_contact_submit') }}" method="post" and CSRF token #}
-                <form class="contact-form" action="" method="post">
+                {% for label, messages in app.flashes(['success', 'error']) %}
+                    {% for msg in messages %}
+                        <div class="flash flash-{{ label }}">{{ msg }}</div>
+                    {% endfor %}
+                {% endfor %}
+                <form class="contact-form" action="{{ path('app_contact_submit') }}" method="post">
+                    <input type="hidden" name="_token" value="{{ csrf_token('contact') }}">
                     <div class="form-group">
                         <label for="name">Nom</label>
-                        <input type="text" id="name" name="name" required placeholder="Votre nom complet">
+                        <input type="text" id="name" name="name" required placeholder="Votre nom complet"
+                               value="{{ app.user ? app.user.firstName ~ ' ' ~ app.user.lastName : '' }}">
                     </div>
                     <div class="form-group">
                         <label for="email">E-mail</label>
-                        <input type="email" id="email" name="email" required placeholder="votre@email.com">
+                        <input type="email" id="email" name="email" required placeholder="votre@email.com"
+                               value="{{ app.user ? app.user.email : '' }}">
                     </div>
                     <div class="form-group">
                         <label for="subject">Sujet</label>
