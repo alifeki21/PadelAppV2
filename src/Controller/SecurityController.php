@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SecurityController extends AbstractController
 {
@@ -29,5 +30,19 @@ class SecurityController extends AbstractController
     public function logout(): void
     {
         throw new \LogicException('This method is intercepted by the Symfony security firewall.');
+    }
+
+
+    #[Route('/auth/status', name: 'auth_status', methods: ['GET'])]
+    public function authStatus(): JsonResponse
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['authenticated' => false]);
+        }
+        return $this->json([
+            'authenticated' => true,
+            'user' => ['email' => $user->getUserIdentifier()],
+        ]);
     }
 }

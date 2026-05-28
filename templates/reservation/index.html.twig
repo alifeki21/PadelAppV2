@@ -43,68 +43,37 @@
                     <h2><i class="fas fa-map-pin"></i> Select Your Court</h2>
 
                     <div class="court-grid">
-                        {#
-                          TODO: replace this static block with a loop over courts passed by the controller:
-                          {% for court in courts %}
-                              <div class="court-card" data-court="{{ court.id }}"> ...
-                          {% endfor %}
-                        #}
-                        <div class="court-card" data-court="1">
-                            <div class="court-image">
-                                <img src="{{ asset('images/cupra.png') }}" alt="Court 1">
-                                <span class="court-status available">Available Today</span>
-                            </div>
-                            <div class="court-info">
-                                <h3>Terrain 1 - Cupra</h3>
-                                <div class="court-features">
-                                    <span><i class="fas fa-house"></i> Indoor</span>
-                                    <span><i class="fas fa-wind"></i> Wind-protected</span>
-                                    <span><i class="fas fa-temperature-high"></i> Heated</span>
-                                    <span><i class="fas fa-snowflake"></i> Air conditioned</span>
+                        {% for court in courts %}
+                            <div class="court-card" data-court="{{ court.id }}">
+                                <div class="court-image">
+                                    <img src="{{ asset('images/' ~ (court.image ?: 'cupra.png')) }}" alt="{{ court.name }}">
+                                    {% if loop.first %}
+                                        <span class="court-status available">Available Today</span>
+                                    {% endif %}
                                 </div>
-                                <div class="court-price">
-                                    <span class="price">25 DT</span> <span class="period">/heure</span>
+                                <div class="court-info">
+                                    <h3>{{ court.name }}</h3>
+                                    <div class="court-features">
+                                        {% if court.isIndoor %}
+                                            <span><i class="fas fa-house"></i> Indoor</span>
+                                            <span><i class="fas fa-wind"></i> Wind-protected</span>
+                                            <span><i class="fas fa-temperature-high"></i> Heated</span>
+                                            <span><i class="fas fa-snowflake"></i> Air conditioned</span>
+                                        {% else %}
+                                            <span><i class="fas fa-cloud-sun"></i> Extérieur</span>
+                                            <span><i class="fas fa-coffee"></i> Café à proximité</span>
+                                            <span><i class="fas fa-sun"></i> Profitez du soleil</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="court-price">
+                                        <span class="price">{{ court.pricePerHour }} DT</span> <span class="period">/heure</span>
+                                    </div>
+                                    <button class="btn-select-court" type="button">Select Court</button>
                                 </div>
-                                <button class="btn-select-court" type="button">Select Court</button>
                             </div>
-                        </div>
-
-                        <div class="court-card" data-court="2">
-                            <div class="court-image">
-                                <img src="{{ asset('images/dechatlon.png') }}" alt="Court 2">
-                            </div>
-                            <div class="court-info">
-                                <h3>Terrain 2 - Dechatlon</h3>
-                                <div class="court-features">
-                                    <span><i class="fas fa-house"></i> Indoor</span>
-                                    <span><i class="fas fa-wind"></i> Wind-protected</span>
-                                    <span><i class="fas fa-temperature-high"></i> Heated</span>
-                                    <span><i class="fas fa-snowflake"></i> Air conditioned</span>
-                                </div>
-                                <div class="court-price">
-                                    <span class="price">25 DT</span> <span class="period">/heure</span>
-                                </div>
-                                <button class="btn-select-court" type="button">Select Court</button>
-                            </div>
-                        </div>
-
-                        <div class="court-card" data-court="3">
-                            <div class="court-image">
-                                <img src="{{ asset('images/codeforces.png') }}" alt="Terrain 3">
-                            </div>
-                            <div class="court-info">
-                                <h3>Terrain 3 - Codeforces</h3>
-                                <div class="court-features">
-                                    <span><i class="fas fa-cloud-sun"></i> Extérieur</span>
-                                    <span><i class="fas fa-coffee"></i> Café à proximité</span>
-                                    <span><i class="fas fa-sun"></i> Profitez du soleil</span>
-                                </div>
-                                <div class="court-price">
-                                    <span class="price">15 DT</span> <span class="period">/heure</span>
-                                </div>
-                                <button class="btn-select-court" type="button">Select Court</button>
-                            </div>
-                        </div>
+                        {% else %}
+                            <p>Aucun terrain disponible pour le moment.</p>
+                        {% endfor %}
                     </div>
                 </section>
 

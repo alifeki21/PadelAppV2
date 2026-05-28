@@ -37,12 +37,13 @@
             </div>
 
             <div class="login-right">
-                <form class="login-form" id="loginForm" action="{{ path('app_login') }}" method="post">
+                <form class="login-form" id="loginForm" action="{{ path('app_login') }}" method="post" novalidate>
                     <h3>Connexion</h3>
 
                     {% if error %}
-                        <div class="alert alert-danger">
-                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                        <div class="server-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            Email ou mot de passe incorrect
                         </div>
                     {% endif %}
 
