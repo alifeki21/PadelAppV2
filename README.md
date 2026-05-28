@@ -14,11 +14,10 @@ cd padelappv2
 # 2. Install dependencies
 composer install
 
-# 3. Copy the env file
-cp .env .env.local
+# 3. CREATE .env.local empty file 
 ```
 
-Then **edit `.env.local`** and update the `DATABASE_URL` line with your local MySQL credentials. If you use XAMPP with the default settings (user `root`, no password, port 3306):
+Then **edit `.env.local`** and copy paste this line:
 
 ```
 DATABASE_URL="mysql://root:@127.0.0.1:3306/padelappv2?serverVersion=10.4.32-MariaDB&charset=utf8mb4"
