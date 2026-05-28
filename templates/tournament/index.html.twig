@@ -1,95 +1,93 @@
 {% extends 'base.html.twig' %}
 
-{% set active_page = 'tournois' %}
-
 {% block title %}Tournois - Padel Badeli 7yeti{% endblock %}
 
 {% block stylesheets %}
+    {{ parent() }}
     <link rel="stylesheet" href="{{ asset('css/tournois.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/tournois.js') }}" defer></script>
 {% endblock %}
 
 {% block body %}
-    <main class="tournois-container">
+    <main class="tournois-container mt-5">
         <div class="tournois-header">
             <h1><i class="fas fa-trophy"></i> Tournois</h1>
             <p class="last-updated">Dernière mise à jour : 11 février 2026</p>
         </div>
 
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
         <section class="upcoming-tournaments">
             <h2><i class="fas fa-calendar-alt"></i> Prochains Tournois</h2>
             <div class="tournament-cards">
-                {#
-                  TODO: replace these three static cards with:
-                  {% for t in tournaments %}
-                      <div class="tournament-card"> ...
-                  {% endfor %}
-                #}
-                <div class="tournament-card">
-                    <div class="tournament-image">
-                        <img src="{{ asset('images/tournois_hello.jpg') }}" alt="Tournoi Hello Padel">
-                        <div class="tournament-date">
-                            <span class="day">15</span>
-                            <span class="month">MAR</span>
+                {% for tournament in tournaments %}
+                    <div class="tournament-card">
+                        <div class="tournament-image">
+                            <img src="{{ asset('images/tournois_hello.jpg') }}" alt="{{ tournament.name }}">
+                            <div class="tournament-date">
+                                <span class="day">{{ tournament.startDate|date('d') }}</span>
+                                <span class="month">{{ tournament.startDate|date('M')|upper }}</span>
+                            </div>
+                        </div>
+                        <div class="tournament-details">
+                            <h3>{{ tournament.name }}</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> Padel Badeli 7yeti</p>
+                            <p><i class="fas fa-users"></i> {{ tournament.maxTeams ?: '16' }} paires max</p>
+                            <p><i class="fas fa-tag"></i> Niveau : {{ tournament.level }}</p>
+                            <div class="tournament-footer">
+                                <span class="prize"><i class="fas fa-medal"></i> Inscription : 60 DT</span>
+                                {% set currentTeams = tournament.tournamentRegistrations|length %}
+                                {% if tournament.maxTeams is null or currentTeams < tournament.maxTeams %}
+                                    <a href="{{ path('app_tournaments_inscription') }}" class="btn-register">S'inscrire</a>
+                                {% else %}
+                                    <span class="btn-register" style="background: #ccc; cursor: not-allowed;">Complet</span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    <div class="tournament-details">
-                        <h3>Tournoi Hello Padel</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Padel Badeli 7yeti</p>
-                        <p><i class="fas fa-users"></i> 16 paires max</p>
-                        <p><i class="fas fa-tag"></i> Niveau : P25/P50/P100</p>
-                        <div class="tournament-footer">
-                            <span class="prize"><i class="fas fa-medal"></i> Inscription : 60 DT</span>
-                            {# TODO: href="{{ path('app_tournament_register', { id: t.id }) }}" #}
-                            <a href="#" class="btn-register">S'inscrire</a>
+                {% else %}
+                    <p>Aucun tournoi disponible dans la base de données. Affichez les tournois statiques ci-dessous :</p>
+                    {# Fallback static tournaments to ensure the page is never empty #}
+                    <div class="tournament-card">
+                        <div class="tournament-image">
+                            <img src="{{ asset('images/tournois_hello.jpg') }}" alt="Tournoi Hello Padel">
+                            <div class="tournament-date">
+                                <span class="day">15</span>
+                                <span class="month">MAR</span>
+                            </div>
+                        </div>
+                        <div class="tournament-details">
+                            <h3>Tournoi Hello Padel</h3>
+                            <p><i class="fas fa-map-marker-alt"></i> Padel Badeli 7yeti</p>
+                            <p><i class="fas fa-users"></i> 16 paires max</p>
+                            <p><i class="fas fa-tag"></i> Niveau : P25/P50/P100</p>
+                            <div class="tournament-footer">
+                                <span class="prize"><i class="fas fa-medal"></i> Inscription : 60 DT</span>
+                                <a href="{{ path('app_tournaments_inscription') }}" class="btn-register">S'inscrire</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="tournament-card">
-                    <div class="tournament-image">
-                        <img src="{{ asset('images/hero.jpg') }}" alt="Tournoi Amical">
-                        <div class="tournament-date">
-                            <span class="day">22</span>
-                            <span class="month">MAR</span>
-                        </div>
-                    </div>
-                    <div class="tournament-details">
-                        <h3>Tournoi Amical</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Padel Badeli 7yeti</p>
-                        <p><i class="fas fa-users"></i> 8 paires (2 WC)</p>
-                        <p><i class="fas fa-tag"></i> Niveau : P1000/P1000 mixte</p>
-                        <div class="tournament-footer">
-                            <span class="prize"><i class="fas fa-medal"></i> Inscription : 60 DT</span>
-                            <a href="#" class="btn-register">S'inscrire</a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tournament-card">
-                    <div class="tournament-image">
-                        <img src="{{ asset('images/Dora-Chamli.jpg') }}" alt="Tournoi Féminin">
-                        <div class="tournament-date">
-                            <span class="day">05</span>
-                            <span class="month">AVR</span>
-                        </div>
-                    </div>
-                    <div class="tournament-details">
-                        <h3>Tournoi Féminin</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> Padel Badeli 7yeti</p>
-                        <p><i class="fas fa-users"></i> 16 paires max</p>
-                        <p><i class="fas fa-tag"></i> Niveau : P25/50/100/1000</p>
-                        <div class="tournament-footer">
-                            <span class="prize"><i class="fas fa-medal"></i> Inscription : 60 DT</span>
-                            <a href="#" class="btn-register">S'inscrire</a>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </section>
 
         <section class="brackets-section">
             <h2><i class="fas fa-diagram-project"></i> Tableaux des Tournois</h2>
-
+            
             <div class="brackets-container">
                 <div class="tournament-selector">
                     <label for="tournament-select">Sélectionner un tournoi :</label>
@@ -100,56 +98,104 @@
                         <option>Championnat Printemps - 12 Avril 2026</option>
                     </select>
                 </div>
-
+                
                 <div class="round-carousel">
                     <button class="nav-arrow" id="prevRound" aria-label="Round précédent">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-
+                    
                     <div class="round-viewport" id="roundViewport">
                         <div class="round-track" id="roundTrack">
                             <div class="round-card">
                                 <h4><i class="fas fa-tasks"></i> Quarts de finale</h4>
                                 <div class="matches-vertical">
-                                    {% for pair in [['A', 'B'], ['C', 'D'], ['E', 'F'], ['G', 'H']] %}
-                                        <div class="match-item">
-                                            <div class="match-teams">
-                                                <div class="team-row">
-                                                    <span class="team-badge"></span>
-                                                    <span class="team-name1">Équipe {{ pair[0] }}</span>
-                                                </div>
-                                                <div class="team-row">
-                                                    <span class="team-badge team2-badge"></span>
-                                                    <span class="team-name2">Équipe {{ pair[1] }}</span>
-                                                </div>
+                                    <div class="match-item">
+                                        <div class="match-teams">
+                                            <div class="team-row">
+                                                <span class="team-badge"></span>
+                                                <span class="team-name1">Équipe A</span>
                                             </div>
-                                            <span class="match-score-badge">-</span>
+                                            <div class="team-row">
+                                                <span class="team-badge team2-badge"></span>
+                                                <span class="team-name2">Équipe B</span>
+                                            </div>
                                         </div>
-                                    {% endfor %}
+                                        <span class="match-score-badge">-</span>
+                                    </div>
+                                    <div class="match-item">
+                                        <div class="match-teams">
+                                            <div class="team-row">
+                                                <span class="team-badge"></span>
+                                                <span class="team-name1">Équipe C</span>
+                                            </div>
+                                            <div class="team-row">
+                                                <span class="team-badge team2-badge"></span>
+                                                <span class="team-name2">Équipe D</span>
+                                            </div>
+                                        </div>
+                                        <span class="match-score-badge">-</span>
+                                    </div>
+                                    <div class="match-item">
+                                        <div class="match-teams">
+                                            <div class="team-row">
+                                                <span class="team-badge"></span>
+                                                <span class="team-name1">Équipe E</span>
+                                            </div>
+                                            <div class="team-row">
+                                                <span class="team-badge team2-badge"></span>
+                                                <span class="team-name2">Équipe F</span>
+                                            </div>
+                                        </div>
+                                        <span class="match-score-badge">-</span>
+                                    </div>
+                                    <div class="match-item">
+                                        <div class="match-teams">
+                                            <div class="team-row">
+                                                <span class="team-badge"></span>
+                                                <span class="team-name1">Équipe G</span>
+                                            </div>
+                                            <div class="team-row">
+                                                <span class="team-badge team2-badge"></span>
+                                                <span class="team-name2">Équipe H</span>
+                                            </div>
+                                        </div>
+                                        <span class="match-score-badge">-</span>
+                                    </div>
                                 </div>
                             </div>
-
+                            
                             <div class="round-card">
                                 <h4><i class="fas fa-chart-simple"></i> Demi-finales</h4>
                                 <div class="matches-vertical">
-                                    {% for pair in [[1, 2], [3, 4]] %}
-                                        <div class="match-item">
-                                            <div class="match-teams">
-                                                <div class="team-row">
-                                                    <span class="team-badge"></span>
-                                                    <span class="team-name1">Vainqueur Quart {{ pair[0] }}</span>
-                                                </div>
-                                                <div class="team-row">
-                                                    <span class="team-badge team2-badge"></span>
-                                                    <span class="team-name2">Vainqueur Quart {{ pair[1] }}</span>
-                                                </div>
+                                    <div class="match-item">
+                                        <div class="match-teams">
+                                            <div class="team-row">
+                                                <span class="team-badge"></span>
+                                                <span class="team-name1">Vainqueur Quart 1</span>
                                             </div>
-                                            <span class="match-score-badge">-</span>
+                                            <div class="team-row">
+                                                <span class="team-badge team2-badge"></span>
+                                                <span class="team-name2">Vainqueur Quart 2</span>
+                                            </div>
                                         </div>
-                                    {% endfor %}
+                                        <span class="match-score-badge">-</span>
+                                    </div>
+                                    <div class="match-item">
+                                        <div class="match-teams">
+                                            <div class="team-row">
+                                                <span class="team-badge"></span>
+                                                <span class="team-name1">Vainqueur Quart 3</span>
+                                            </div>
+                                            <div class="team-row">
+                                                <span class="team-badge team2-badge"></span>
+                                                <span class="team-name2">Vainqueur Quart 4</span>
+                                            </div>
+                                        </div>
+                                        <span class="match-score-badge">-</span>
+                                    </div>
                                 </div>
                             </div>
-
+                            
                             <div class="round-card">
                                 <h4><i class="fas fa-crown"></i> Finale</h4>
                                 <div class="matches-vertical">
@@ -173,12 +219,12 @@
                             </div>
                         </div>
                     </div>
-
+                    
                     <button class="nav-arrow" id="nextRound" aria-label="Tour suivant">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </div>
-
+                
                 <div class="carousel-dots" id="carouselDots">
                     <button class="dot active" data-index="0" aria-label="Aller aux quarts de finale"></button>
                     <button class="dot" data-index="1" aria-label="Aller aux demi-finales"></button>
@@ -187,8 +233,4 @@
             </div>
         </section>
     </main>
-{% endblock %}
-
-{% block javascripts %}
-    <script src="{{ asset('js/tournois.js') }}"></script>
 {% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription Tournois – Padel{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/inscription_tournois.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block body %}
+    <section class="tournois-section container mt-5">
+        <h2 class="section-title">Inscription aux tournois</h2>
+        
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-3">
+                {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger mt-3">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div id="tournaments" class="tournoi-grid mt-4">
+            {% for tournament in tournaments %}
+                {% set currentTeams = tournament.tournamentRegistrations|length %}
+                <div class="tournoi-card">
+                    <h3 class="tournoi-title">{{ tournament.name }}</h3>
+                    <p class="tournoi-date">📅 {{ tournament.startDate|date('d/m/Y') }}</p>
+                    <p class="tournoi-spots">Équipes : {{ currentTeams }} / {{ tournament.maxTeams ?: '16' }}</p>
+                    
+                    {% if tournament.maxTeams is null or currentTeams < tournament.maxTeams %}
+                        <a href="{{ path('app_tournaments_register', {'id': tournament.id}) }}" class="btn btn-primary register-btn">S'inscrire</a>
+                    {% else %}
+                        <button class="btn btn-secondary register-btn" disabled style="cursor: not-allowed;">Complet</button>
+                    {% endif %}
+                </div>
+            {% else %}
+                {# Fallback static tournaments to ensure the page is never empty #}
+                <div class="tournoi-card">
+                    <h3 class="tournoi-title">Tournoi Hello Padel</h3>
+                    <p class="tournoi-date">📅 15/03/2026</p>
+                    <p class="tournoi-spots">Équipes : 0 / 16</p>
+                    <a href="#" class="btn btn-primary register-btn disabled" style="cursor: not-allowed; opacity: 0.6;">S'inscrire (Base de données vide)</a>
+                </div>
+                <div class="tournoi-card">
+                    <h3 class="tournoi-title">Tournoi Amical</h3>
+                    <p class="tournoi-date">📅 22/03/2026</p>
+                    <p class="tournoi-spots">Équipes : 0 / 8</p>
+                    <a href="#" class="btn btn-primary register-btn disabled" style="cursor: not-allowed; opacity: 0.6;">S'inscrire (Base de données vide)</a>
+                </div>
+                <div class="tournoi-card">
+                    <h3 class="tournoi-title">Tournoi Féminin</h3>
+                    <p class="tournoi-date">📅 05/04/2026</p>
+                    <p class="tournoi-spots">Équipes : 0 / 16</p>
+                    <a href="#" class="btn btn-primary register-btn disabled" style="cursor: not-allowed; opacity: 0.6;">S'inscrire (Base de données vide)</a>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

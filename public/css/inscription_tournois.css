@@ -1,0 +1,159 @@
+/* =====================================================
+   inscription_tournois.css — Tournament registration page
+   ===================================================== */
+
+/* ── Page body ── */
+body {
+  background: #f0f4f8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #0f172a;
+  margin: 0;
+}
+
+/* ── Section wrapper ── */
+.tournois-section {
+  max-width: 960px;
+  margin: 60px auto 80px;
+  padding: 0 20px;
+}
+
+/* ── Section title ── */
+.section-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #1a5276;
+  margin-bottom: 50px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: #3e1bbf;
+  border-radius: 2px;
+  margin: 12px auto 0;
+}
+
+/* ── Grid of cards ── */
+.tournoi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+/* ── Single card ── */
+.tournoi-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 28px 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border-top: 4px solid #3e1bbf;
+}
+
+.tournoi-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(62, 27, 191, 0.15);
+}
+
+/* ── Card title ── */
+.tournoi-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1a5276;
+  margin: 0;
+}
+
+/* ── Date chip ── */
+.tournoi-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #eef2ff;
+  color: #3e1bbf;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 20px;
+  width: fit-content;
+}
+
+/* ── Spots counter ── */
+.tournoi-spots {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* ── Register button ── */
+.register-btn {
+  margin-top: auto;
+  background: #3e1bbf;
+  color: #fff;
+  border: none;
+  padding: 11px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.register-btn:hover {
+  background: #1a5276;
+  transform: translateY(-2px);
+}
+
+.register-btn:active {
+  transform: translateY(0);
+}
+
+/* ── Feedback message ── */
+.msg {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* ── Empty / error state ── */
+.error-msg {
+  text-align: center;
+  color: #e74c3c;
+  font-size: 1rem;
+  margin-top: 40px;
+}
+
+/* ── Loading skeleton (optional nice touch) ── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  border-radius: 16px;
+  height: 180px;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s infinite;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .tournoi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+}

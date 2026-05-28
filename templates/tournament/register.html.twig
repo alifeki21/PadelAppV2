@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription – {{ tournament.name }} | Padel{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/register_tournament.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block body %}
+
+    {# ===== HERO SECTION ===== #}
+    <div class="register-hero">
+        <span class="register-hero-icon"><i class="fas fa-trophy"></i></span>
+        <h1>Inscription au tournoi</h1>
+        <div class="tournament-name">{{ tournament.name }}</div>
+        <a href="{{ path('app_tournaments_index') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Retour aux tournois
+        </a>
+    </div>
+
+    {# ===== MAIN CONTENT ===== #}
+    <section class="register-section">
+
+        {% for message in app.flashes('success') %}
+            <div class="alert-custom alert-success">
+                <i class="fas fa-check-circle"></i> {{ message }}
+            </div>
+        {% endfor %}
+        {% for message in app.flashes('error') %}
+            <div class="alert-custom alert-error">
+                <i class="fas fa-exclamation-circle"></i> {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="register-layout">
+
+            {# ===== TOURNAMENT INFO SIDEBAR ===== #}
+            <div class="tournament-info-card">
+                <div class="card-label"><i class="fas fa-info-circle"></i> Détails du tournoi</div>
+                <h2>{{ tournament.name }}</h2>
+
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="info-content">
+                        <span class="info-label">Date</span>
+                        <span class="info-value">{{ tournament.startDate|date('d/m/Y') }}</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-tag"></i></div>
+                    <div class="info-content">
+                        <span class="info-label">Niveau</span>
+                        <span class="info-value">{{ tournament.level ?: 'Tous niveaux' }}</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="info-content">
+                        <span class="info-label">Lieu</span>
+                        <span class="info-value">Padel Badeli 7yeti</span>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-users"></i></div>
+                    <div class="info-content">
+                        <span class="info-label">Équipes inscrites</span>
+                        {% set currentTeams = tournament.tournamentRegistrations|length %}
+                        <span class="info-value">{{ currentTeams }} / {{ tournament.maxTeams ?: '∞' }}</span>
+                    </div>
+                </div>
+
+                {% if tournament.maxTeams is null or currentTeams < tournament.maxTeams %}
+                    <div class="availability-badge">
+                        <span class="dot"></span>
+                        Places disponibles
+                    </div>
+                {% else %}
+                    <div class="availability-badge full">
+                        <span class="dot"></span>
+                        Tournoi complet
+                    </div>
+                {% endif %}
+            </div>
+
+            {# ===== REGISTRATION FORM ===== #}
+            <div class="form-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-pen-to-square"></i> Formulaire d'inscription</h3>
+                    <p>Remplissez les informations ci-dessous pour vous inscrire à ce tournoi.</p>
+                </div>
+
+                <div class="step-indicator">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <span class="step-label">Partenaire</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <span class="step-label">Confirmation</span>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ path('app_tournaments_register', {'id': tournament.id}) }}">
+                    <div class="form-group">
+                        <label for="partner_name">Nom du partenaire <span class="required">*</span></label>
+                        <div class="input-wrapper">
+                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                            <input
+                                type="text"
+                                id="partner_name"
+                                name="partner_name"
+                                placeholder="Ex: Ahmed Ben Ali"
+                                required
+                                autocomplete="off"
+                            >
+                        </div>
+                    </div>
+
+                    <div class="info-box">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Votre inscription est liée à votre compte. En confirmant, vous acceptez de participer à ce tournoi avec votre partenaire désigné.</span>
+                    </div>
+
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-check"></i>
+                        Confirmer l'inscription
+                    </button>
+
+                    <a href="{{ path('app_tournaments_index') }}" class="btn-cancel">
+                        <i class="fas fa-times"></i>
+                        Annuler
+                    </a>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+{% endblock %}
