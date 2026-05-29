@@ -68,7 +68,7 @@
                                     <div class="court-price">
                                         <span class="price">{{ court.pricePerHour }} DT</span> <span class="period">/heure</span>
                                     </div>
-                                    <button class="btn-select-court" type="button">Select Court</button>
+                                    <button class="btn-select-court" type="button" data-id="{{ court.id }}">Select Court</button>
                                 </div>
                             </div>
                         {% else %}
@@ -166,7 +166,7 @@
 
                                 <div class="summary-total">
                                     <span>Montant à payer :</span>
-                                    <span id="summary-total">25.00 DT</span>
+                                    <span id="summary-total">100.00 DT</span>
                                 </div>
                             </div>
                         </div>
@@ -181,7 +181,7 @@
                 <div class="success-message hidden" id="successMessage">
                     <i class="fas fa-check-circle"></i>
                     <h3>Booking Confirmed!</h3>
-                    <p>Your court has been successfully reserved. Check your email for confirmation.</p>
+                    <p>Your court has been successfully reserved.</p>
                     <a href="#" id="returnToStep1" class="btn-primary">Return</a>
                 </div>
             </div>

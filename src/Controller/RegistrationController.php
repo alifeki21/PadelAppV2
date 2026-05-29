@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 class RegistrationController extends AbstractController
 {
     #[Route('/signup', name: 'app_signup')]
@@ -49,4 +49,25 @@ class RegistrationController extends AbstractController
     {
         return $this->render('security/signup_success.html.twig');
     }
+    #[Route('/api/auth-status', name: 'api_auth_status', methods: ['GET'])]
+public function checkAuthStatus(): JsonResponse
+{
+    $user = $this->getUser();
+
+    if (!$user) {
+        return new JsonResponse([
+            'authenticated' => false,
+            'user' => null
+        ]);
+    }
+
+    return new JsonResponse([
+        'authenticated' => true,
+        'user' => [
+            'email' => $user->getUserIdentifier()
+        ]
+    ]);
 }
+
+    }
+

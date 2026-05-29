@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Court;
 use App\Entity\Reservation;
 use App\Repository\CourtRepository;
 use App\Repository\ReservationRepository;
@@ -17,131 +18,143 @@ class ReservationController extends AbstractController
 {
     // ── 1. Affiche la page HTML ──────────────────────────────────────────
     #[Route('/reservation', name: 'app_reservation', methods: ['GET'])]
-    #[IsGranted('ROLE_USER')]
-    public function index(CourtRepository $courtRepository): Response
+    public function index(CourtRepository $courtRepository, EntityManagerInterface $entityManager): Response
     {
+        $courts = $courtRepository->findAll();
+
+        if (empty($courts) || isset($_GET['force_refresh'])) {
+            foreach ($courts as $oldCourt) {
+                $entityManager->remove($oldCourt);
+            }
+            $entityManager->flush();
+
+            $court1 = new Court();
+            $court1->setName('Court 1 - Cupra');
+            $court1->setIsIndoor(0);
+            $court1->setPricePerHour(25.00); 
+            $court1->setImage('cupra.png');
+            $entityManager->persist($court1);
+
+            $court2 = new Court();
+            $court2->setName('Court 2 - Decathlon');
+            $court2->setIsIndoor(1);
+            $court2->setPricePerHour(25.00);
+            $court2->setImage('dechatlon.png');
+            $entityManager->persist($court2);
+
+            $court3 = new Court();
+            $court3->setName('Court 3 - Codeforces');
+            $court3->setIsIndoor(0);
+            $court3->setPricePerHour(25.00);
+            $court3->setImage('codeforces.png');
+            $entityManager->persist($court3);
+
+            $entityManager->flush();
+            $courts = $courtRepository->findAll();
+        }
+
         return $this->render('reservation/index.html.twig', [
-            'courts' => $courtRepository->findAll(),
+            'courts' => $courts,
         ]);
     }
 
-    // ── 2. GET : créneaux déjà pris pour un terrain + date ───────────────
-    #[Route('/reservation/slots', name: 'app_reservation_slots', methods: ['GET'])]
-    public function getBookedSlots(
-        Request $request,
-        CourtRepository $courtRepository,
-        ReservationRepository $reservationRepository
-    ): JsonResponse {
+    #[Route('/api/booked-slots', name: 'api_booked_slots', methods: ['GET'])]
+    public function getBookedSlots(Request $request, CourtRepository $courtRepository, ReservationRepository $reservationRepository): JsonResponse
+    {
+        $courtId = (int)$request->query->get('court_number');
+        $dateStr = $request->query->get('reservation_date');
 
-        $court = $courtRepository->find((int) $request->query->get('court_number'));
+        if (!$courtId || !$dateStr) {
+            return new JsonResponse(['success' => false, 'bookedSlots' => []]);
+        }
+
+        $court = $courtRepository->find($courtId);
         if (!$court) {
-            return $this->json(['success' => false, 'message' => 'Terrain introuvable.'], 400);
-        }
-
-        $dateStr = $request->query->get('reservation_date', '');
-        if (!$this->isValidDate($dateStr)) {
-            return $this->json(['success' => false, 'message' => 'Date invalide.'], 400);
-        }
-
-        $reservations = $reservationRepository->findBy([
-            'court'           => $court,
-            'reservationDate' => new \DateTime($dateStr),
-        ]);
-
-        $bookedSlots = array_map(
-            fn(Reservation $r) => $r->getReservationTime()->format('H:i'),
-            $reservations
-        );
-
-        return $this->json(['success' => true, 'bookedSlots' => $bookedSlots]);
-    }
-
-    // ── 3. POST : enregistre la réservation (appelé par le JS) ──────────
-    #[Route('/reservation/save', name: 'app_reservation_save', methods: ['POST'])]
-    #[IsGranted('ROLE_USER')]
-    public function save(
-        Request $request,
-        CourtRepository $courtRepository,
-        ReservationRepository $reservationRepository,
-        EntityManagerInterface $entityManager
-    ): JsonResponse {
-
-        $court = $courtRepository->find((int) $request->request->get('court_number'));
-        if (!$court) {
-            return $this->json(['success' => false, 'message' => 'Veuillez choisir un terrain valide.']);
-        }
-
-        $dateStr     = $request->request->get('reservation_date', '');
-        $timeStr     = $request->request->get('reservation_time', '');
-        $playerCount = (int) $request->request->get('player_count', 4);
-        $requirements = trim($request->request->get('requirements', ''));
-
-        if (!$this->isValidDate($dateStr)) {
-            return $this->json(['success' => false, 'message' => 'Veuillez choisir une date valide.']);
-        }
-
-        if (!$this->isValidTime($timeStr)) {
-            return $this->json(['success' => false, 'message' => 'Veuillez choisir un créneau valide.']);
-        }
-
-        if (!in_array($playerCount, [2, 3, 4], true)) {
-            return $this->json(['success' => false, 'message' => 'Nombre de joueurs invalide.']);
-        }
-
-        if (strlen($requirements) > 500) {
-            return $this->json(['success' => false, 'message' => 'Demandes trop longues (max 500 caractères).']);
+            return new JsonResponse(['success' => false, 'bookedSlots' => []]);
         }
 
         $date = new \DateTime($dateStr);
-        $time = new \DateTime($timeStr);
-
-        // Créneau déjà pris ?
-        $existing = $reservationRepository->findOneBy([
-            'court'           => $court,
-            'reservationDate' => $date,
-            'reservationTime' => $time,
+        $reservations = $reservationRepository->findBy([
+            'court' => $court,
+            'reservationDate' => $date
         ]);
 
-        if ($existing) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Ce créneau est déjà réservé. Veuillez en choisir un autre.',
-            ]);
+        $bookedSlots = [];
+        foreach ($reservations as $res) {
+            $bookedSlots[] = $res->getReservationTime()->format('H:i');
         }
 
-        $reservation = new Reservation();
-        $reservation->setUser($this->getUser());
-        $reservation->setCourt($court);
-        $reservation->setReservationDate($date);
-        $reservation->setReservationTime($time);
-        $reservation->setPlayerCount($playerCount);
-        $reservation->setRequirements($requirements ?: null);
-        $reservation->setCreatedAt(new \DateTimeImmutable());
-
-        $entityManager->persist($reservation);
-        $entityManager->flush();
-
-        return $this->json([
-            'success' => true,
-            'message' => 'Réservation confirmée.',
-            'reservation' => [
-                'courtNumber' => $court->getId(),
-                'date'        => $dateStr,
-                'time'        => substr($timeStr, 0, 5),
-                'playerCount' => $playerCount,
-            ],
-        ]);
+        return new JsonResponse(['success' => true, 'bookedSlots' => $bookedSlots]);
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────
-    private function isValidDate(string $date): bool
-    {
-        $d = \DateTime::createFromFormat('Y-m-d', $date);
-        return $d && $d->format('Y-m-d') === $date && $date >= date('Y-m-d');
-    }
+    #[Route('/api/reservation/submit', name: 'app_reservation_submit', methods: ['POST'])]
+    public function submit(
+        Request $request,
+        CourtRepository $courtRepository,
+        ReservationRepository $reservationRepository,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse {
+        $user = $this->getUser();
+        if (!$user) {
+            return new JsonResponse([
+                'success' => false,
+                'loginRequired' => true,
+                'message' => 'Vous devez être connecté pour réserver un terrain.'
+            ], 401);
+        }
 
-    private function isValidTime(string $time): bool
-    {
-        return (bool) preg_match('/^\d{2}:\d{2}(:\d{2})?$/', $time);
+        $courtId = (int)$request->request->get('court_number');
+        $dateStr = (string)$request->request->get('reservation_date');
+        $timeStr = (string)$request->request->get('reservation_time');
+
+        $court = $courtRepository->find($courtId);
+        if (!$court) {
+            return new JsonResponse(['success' => false, 'message' => 'Terrain introuvable.']);
+        }
+
+        try {
+            $date = new \DateTime($dateStr);
+            $time = new \DateTime($timeStr);
+
+            $existingReservation = $reservationRepository->findOneBy([
+                'court' => $court,
+                'reservationDate' => $date,
+                'reservationTime' => $time
+            ]);
+
+            if ($existingReservation) {
+                return new JsonResponse([
+                    'success' => false,
+                    'message' => 'Désolé, ce créneau vient tout juste d\'être réservé par un autre joueur !'
+                ]);
+            }
+
+            $reservation = new Reservation();
+            $reservation->setUser($user);
+            $reservation->setCourt($court);
+            $reservation->setReservationDate($date);
+            $reservation->setReservationTime($time);
+            $reservation->setPlayerCount((int)$request->request->get('player_count', 4));
+            $reservation->setRequirements($request->request->get('requirements') ?: null);
+            $reservation->setCreatedAt(new \DateTimeImmutable());
+            
+            if (method_exists($reservation, 'setPrice')) {
+                $reservation->setPrice(100.00);
+            }
+
+            $entityManager->persist($reservation);
+            $entityManager->flush();
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Réservation confirmée avec succès !'
+            ]);
+
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Une erreur interne est survenue lors de la création de la réservation.'
+            ], 500);
+        }
     }
 }
