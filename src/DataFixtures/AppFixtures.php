@@ -16,21 +16,21 @@ class AppFixtures extends Fixture
         $court1->setName('Court 1 - Cupra');
         $court1->setIsIndoor(0); // Outdoor
         $court1->setPricePerHour(25.00); 
-        $court1->setImage('court1.png');
+        $court1->setImage('cupra.png');
         $manager->persist($court1);
 
         $court2 = new Court();
         $court2->setName('Court 2 - Decathlon');
         $court2->setIsIndoor(1); // Indoor
         $court2->setPricePerHour(25.00);
-        $court2->setImage('court2.png');
+        $court2->setImage('dechatlon.png');
         $manager->persist($court2);
 
         $court3 = new Court();
         $court3->setName('Court 3 - Codeforces');
         $court3->setIsIndoor(0);
         $court3->setPricePerHour(15.00);
-        $court3->setImage('court3.png');
+        $court3->setImage('codeforces.png');
         $manager->persist($court3);
 
         // On crée les tournois (Tournaments)
