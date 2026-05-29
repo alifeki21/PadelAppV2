@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% set active_page = 'profile' %}
+
+{% block title %}Mon Profil - Padel House{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/profile.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2>{{ app.user.firstName }} {{ app.user.lastName }}</h2>
+                <p>{{ app.user.email }}</p>
+            </div>
+            <div class="profile-body">
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Prénom</div>
+                        <div class="info-value">{{ app.user.firstName }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Nom</div>
+                        <div class="info-value">{{ app.user.lastName }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ app.user.email }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Téléphone</div>
+                        <div class="info-value">{{ app.user.phone ?: 'Non renseigné' }}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Niveau de jeu</div>
+                        <div class="info-value">
+                            <span class="badge-level">
+                                {{ app.user.skillLevel ?: '1.0' }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Position préférée</div>
+                        <div class="info-value">
+                            {% if app.user.preferredPosition == 'left' %}
+                                Gauche
+                            {% elseif app.user.preferredPosition == 'right' %}
+                                Droite
+                            {% elseif app.user.preferredPosition == 'both' %}
+                                Les deux
+                            {% else %}
+                                {{ app.user.preferredPosition ?: 'Non renseigné' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Main dominante</div>
+                        <div class="info-value">
+                            {% if app.user.playingHand == 'left' %}
+                                Gaucher
+                            {% elseif app.user.playingHand == 'right' %}
+                                Droitier
+                            {% else %}
+                                {{ app.user.playingHand ?: 'Non renseigné' }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

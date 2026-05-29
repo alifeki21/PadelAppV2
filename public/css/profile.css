@@ -1,0 +1,113 @@
+/* Profile Page Custom Styles */
+.profile-container {
+    max-width: 800px;
+    margin: 60px auto 100px;
+    padding: 20px;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.profile-header {
+    background: linear-gradient(135deg, var(--primary, #3e1bbf), #00c6ff);
+    color: white;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+}
+
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    background: white;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px;
+    color: var(--primary, #3e1bbf);
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-md);
+}
+
+.profile-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.profile-header p {
+    font-size: 1rem;
+    opacity: 0.9;
+    margin: 0;
+}
+
+.profile-body {
+    padding: 40px;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+.info-item {
+    background: #f8fafc;
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    transition: all 0.3s ease;
+}
+
+.info-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    border-color: rgba(62, 27, 191, 0.2);
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: var(--text-muted, #64748b);
+    margin-bottom: 6px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-dark, #0f172a);
+}
+
+.badge-level {
+    display: inline-block;
+    background: #e7f1ff;
+    color: var(--primary, #3e1bbf);
+    padding: 6px 16px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 767px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .profile-header {
+        padding: 30px 20px;
+    }
+    
+    .profile-body {
+        padding: 24px 20px;
+    }
+}

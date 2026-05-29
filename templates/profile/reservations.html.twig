@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% set active_page = 'reservations' %}
+
+{% block title %}Mes Réservations - Padel House{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/reservations.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="res-container">
+        <h2 class="page-title"><i class="fas fa-calendar-check me-2 text-primary"></i> Mes Réservations</h2>
+        
+        <div id="reservationsList">
+            {% for reservation in reservations %}
+                <div class="res-card">
+                    <div class="res-info">
+                        <h4>{{ reservation.court.name }}</h4>
+                        <p><i class="fas fa-calendar-alt"></i> {{ reservation.reservationDate|date('d/m/Y') }} à {{ reservation.reservationTime|date('H:i') }}</p>
+                        <p><i class="fas fa-users"></i> {{ reservation.playerCount }} joueurs</p>
+                        {% if reservation.requirements %}
+                            <p><i class="fas fa-comment-dots"></i> Note : {{ reservation.requirements }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="res-details">
+                        <div class="res-price">
+                            {# Standard duration of 90 minutes = 1.5 * pricePerHour #}
+                            {{ (reservation.court.pricePerHour * 1.5)|number_format(2, ',', ' ') }} DT
+                        </div>
+                        
+                        {# Determine status based on reservation date and time #}
+                        {% set isPast = false %}
+                        {% set resDateTime = reservation.reservationDate|date('Y-m-d') ~ ' ' ~ reservation.reservationTime|date('H:i:s') %}
+                        {% if resDateTime|date('U') < 'now'|date('U') %}
+                            {% set isPast = true %}
+                        {% endif %}
+                        
+                        {% if isPast %}
+                            <span class="res-status status-confirmed" style="background-color: #e2e8f0; color: #475569;">Terminé</span>
+                        {% else %}
+                            <span class="res-status status-confirmed">Confirmé</span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="no-res">
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>Aucune réservation trouvée</h3>
+                    <p>Vous n'avez pas encore réservé de terrain de padel.</p>
+                    <a href="{{ path('app_reservation') }}" class="primary-btn btn-book-now">Réserver un terrain</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

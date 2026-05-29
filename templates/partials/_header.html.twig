@@ -30,11 +30,33 @@
 
                     {# Show logout button if logged in, otherwise show Login / Sign-up links #}
                     {% if app.user %}
-                        <li class="nav-item">
-                            <span class="nav-link">👋 {{ app.user.firstName }}</span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_logout') }}">Déconnexion</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                👋 {{ app.user.firstName }} {{ app.user.lastName }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow">
+                                <li class="dropdown-header">
+                                    <span>Connecté en tant que</span>
+                                    <strong>{{ app.user.email }}</strong>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_profile') }}">
+                                        <i class="fas fa-user me-2 text-primary"></i> Mon Profil
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('app_profile_reservations') }}">
+                                        <i class="fas fa-calendar-check me-2 text-primary"></i> Mes Réservations
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     {% else %}
                         <li class="nav-item">
