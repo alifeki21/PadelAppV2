@@ -297,6 +297,7 @@ h3 {
 }
 
 .dropdown-item.text-danger:hover {
-  background-color: rgba(220, 53, 69, 0.08);
+  background-color: rgba(220, 54, 69, 0.08);
   color: #dc3545;
+
 }
