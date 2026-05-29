@@ -19,16 +19,6 @@
                     et notre équipe de coachs experts sont là pour vous aider à améliorer votre jeu et à profiter des
                     sensations du padel. Rejoignez-nous dès aujourd'hui et faites partie de notre communauté dynamique
                     de passionnés de padel !</p>
-                <div class="feedback-links-container">
-                    <div class="feedback-link">
-                        {# TODO: templates/feedback/index.html.twig is ready — add FeedbackController and route 'app_feedback' #}
-                        <a href="#">Feedback positive</a>
-                    </div>
-                    <div class="feedback-link">
-                        {# TODO: templates/feedback/report.html.twig is ready — add ReportController and route 'app_report' #}
-                        <a href="#">Feedback negative</a>
-                    </div>
-                </div>
             </div>
             <div class="about-image">
                 <img src="{{ asset('images/padel_court.jpeg') }}" alt="Terrain de Padel">
@@ -37,33 +27,46 @@
         <div class="contact-wrapper">
             <div class="contact-container">
                 <h1>Contactez-nous</h1>
+
                 {% for label, messages in app.flashes(['success', 'error']) %}
-                    {% for msg in messages %}
-                        <div class="flash flash-{{ label }}">{{ msg }}</div>
+                    {% for message in messages %}
+                        <div class="alert alert-{{ label }}">
+                            {{ message }}
+                        </div>
                     {% endfor %}
                 {% endfor %}
-                <form class="contact-form" action="{{ path('app_contact_submit') }}" method="post">
-                    <input type="hidden" name="_token" value="{{ csrf_token('contact') }}">
-                    <div class="form-group">
-                        <label for="name">Nom</label>
-                        <input type="text" id="name" name="name" required placeholder="Votre nom complet"
-                               value="{{ app.user ? app.user.firstName ~ ' ' ~ app.user.lastName : '' }}">
+
+                {% if app.user %}
+                    <p class="contact-user-info">
+                        Vous êtes connecté en tant que
+                        <strong>{{ app.user.firstName }} {{ app.user.lastName }}</strong>
+                        ({{ app.user.email }})
+                    </p>
+
+                    {{ form_start(form, {attr: {class: 'contact-form', novalidate: 'novalidate'}}) }}
+                        <div class="form-group">
+                            {{ form_label(form.subject) }}
+                            {{ form_widget(form.subject) }}
+                            {{ form_errors(form.subject) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.message) }}
+                            {{ form_widget(form.message) }}
+                            {{ form_errors(form.message) }}
+                        </div>
+
+                        <button type="submit" class="submit-btn">Envoyer le message</button>
+                    {{ form_end(form) }}
+                {% else %}
+                    <div class="alert alert-info">
+                        <p>Pour nous envoyer un message, merci de
+                            <a href="{{ path('app_login') }}">vous connecter</a>
+                            ou
+                            <a href="{{ path('app_signup') }}">créer un compte</a>.
+                        </p>
                     </div>
-                    <div class="form-group">
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email" name="email" required placeholder="votre@email.com"
-                               value="{{ app.user ? app.user.email : '' }}">
-                    </div>
-                    <div class="form-group">
-                        <label for="subject">Sujet</label>
-                        <input type="text" id="subject" name="subject" required placeholder="Le sujet de votre message">
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="5" required placeholder="Votre message..."></textarea>
-                    </div>
-                    <button type="submit" class="submit-btn">Envoyer le message</button>
-                </form>
+                {% endif %}
             </div>
             <div class="social-media-section">
                 <h3>Suivez-nous</h3>

@@ -18,3 +18,8 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+.idea/
+.php-version
+
+test_data_contact.sql

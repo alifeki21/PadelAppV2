@@ -42,7 +42,7 @@ security:
         - { path: ^/signup,  roles: PUBLIC_ACCESS }
         - { path: ^/terms,   roles: PUBLIC_ACCESS }
         - { path: ^/privacy, roles: PUBLIC_ACCESS }
-
+        - { path: ^/reservation, roles: ROLE_USER }
 when@test:
     security:
         password_hashers:
