@@ -8,7 +8,7 @@ let reservationState = {
     requirements: ''
 };
 
-var courtPrice = 25;
+var courtPrice = 100;
 let bookedSlots = [];
 let isSubmittingReservation = false;
 let authenticatedUser = null;
@@ -41,12 +41,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 function checkAuthentication() {
-    return fetch('../php/auth_status.php')
+    return fetch('/api/auth-status')
         .then(response => response.json())
         .then(data => {
             if (!data.authenticated) {
                 alert('Il faut s\'authentifier d\'abord pour réserver un terrain.');
-                window.location.href = '../php/login.php';
+                window.location.href = '/login';
                 return false;
             }
 
@@ -56,7 +56,7 @@ function checkAuthentication() {
         .catch(error => {
             console.error('Authentication check failed:', error);
             alert('Il faut s\'authentifier d\'abord pour réserver un terrain.');
-            window.location.href = '../php/login.php';
+            window.location.href = '/login';
             return false;
         });
 }
@@ -114,8 +114,7 @@ function setupButtonListeners() {
     document.querySelectorAll('.btn-select-court').forEach((button, index) => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
-            const courtId = index + 1;
-            courtPrice = (courtId === 3) ? 15 : 25;
+            const courtId = parseInt(this.getAttribute('data-id'), 10);
             console.log('Court selected:', courtId);
             selectCourt(courtId);
         });
@@ -184,7 +183,9 @@ function validateStep2() {
         alert('Veuillez choisir un créneau.');
         return false;
     }
-    if (bookedSlots.includes(reservationState.selectedTime.substring(0, 5))) {
+    
+    const shortTime = reservationState.selectedTime.substring(0, 5);
+    if (bookedSlots.includes(shortTime)) {
         alert('Ce créneau est déjà réservé. Veuillez choisir un autre créneau.');
         reservationState.selectedTime = null;
         updateTimeSlots();
@@ -300,6 +301,10 @@ function updateTimeSlots() {
             continue;
         }
         
+        if (reservationState.selectedTime === timeString) {
+            slot.classList.add('selected');
+        }
+        
         slot.addEventListener('click', function() {
             document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
             this.classList.add('selected');
@@ -323,7 +328,7 @@ function loadBookedSlots() {
         reservation_date: reservationState.selectedDate
     });
 
-    fetch(`../php/process_reservation.php?${params.toString()}`)
+    fetch(`/api/booked-slots?${params.toString()}`)
         .then(response => response.json())
         .then(data => {
             bookedSlots = data.success ? data.bookedSlots : [];
@@ -379,7 +384,7 @@ function updateSummary() {
     
     const timeSummary = document.getElementById('summary-time');
     if (timeSummary) {
-        timeSummary.textContent = reservationState.selectedTime ? reservationState.selectedTime.substring(0, 5) : 'Not selected';
+        timeSummary.textContent = reservationState.selectedTime ? reservationState.selectedTime.substring(0, 5) : 'Non sélectionné';
     }
 
     const playersSummary = document.getElementById('summary-players');
@@ -394,21 +399,21 @@ function updateSummary() {
     
     const totalSummary = document.getElementById('summary-total');
     if (totalSummary) {
-        totalSummary.textContent = `€${courtPrice}.00`;
+        totalSummary.textContent = `100 DT`;
     }
 }
 
 function confirmBooking() {
-    if (isSubmittingReservation) {
-        return;
-    }
+    if (isSubmittingReservation) return;
 
-    if (!reservationState.selectedCourt || !validateStep2()) {
+    if (!reservationState.selectedCourt || !reservationState.selectedDate || !reservationState.selectedTime) {
+        alert('Informations de réservation incomplètes.');
         return;
     }
 
     isSubmittingReservation = true;
-    const confirmBtn = document.getElementById('btn-confirm-final');
+    
+    const confirmBtn = document.querySelector('#step4 .btn-primary') || document.getElementById('btn-confirm-final');
     if (confirmBtn) {
         confirmBtn.disabled = true;
         confirmBtn.textContent = 'Réservation...';
@@ -416,23 +421,21 @@ function confirmBooking() {
 
     console.log('Envoi de la réservation au serveur...', reservationState);
     
-    // Préparation des données pour le backend PHP
     const formData = new FormData();
     formData.append('court_number', reservationState.selectedCourt);
     formData.append('reservation_date', reservationState.selectedDate);
     formData.append('reservation_time', reservationState.selectedTime);
     formData.append('player_count', reservationState.playerCount || 4);
     formData.append('requirements', reservationState.requirements || '');
+    formData.append('price', 100);
 
-    // Envoi asynchrone vers PHP
-    fetch('../php/process_reservation.php', {
+    fetch('/api/reservation/submit', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert(data.message || 'Réservation confirmée.');
             document.querySelectorAll('.reservation-step').forEach(step => {
                 step.classList.add('hidden');
             });
@@ -440,13 +443,16 @@ function confirmBooking() {
             const successMessage = document.getElementById('successMessage');
             if (successMessage) {
                 successMessage.classList.remove('hidden');
+            } else {
+                alert('Réservation confirmée avec succès !');
             }
+            
             reservationState.selectedTime = null;
             loadBookedSlots();
         } else {
             if (data.loginRequired) {
                 alert(data.message);
-                window.location.href = '../php/login.php';
+                window.location.href = '/login';
                 return;
             }
             alert('Erreur : ' + data.message);
@@ -455,7 +461,7 @@ function confirmBooking() {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Une erreur de connexion est survenue.');
+        alert('Une erreur de connexion est survenue lors de la validation.');
     })
     .finally(() => {
         isSubmittingReservation = false;
@@ -476,7 +482,7 @@ function loadSavedState() {
                 playerCount: parsed.playerCount || reservationState.playerCount,
                 requirements: parsed.requirements || reservationState.requirements,
             };
-            reservationState.currentStep = 1; // On force le retour à 1 à l'initialisation
+            reservationState.currentStep = 1;
             setupReservationDetails();
         } catch (e) {
             console.error('Failed to load saved state', e);
