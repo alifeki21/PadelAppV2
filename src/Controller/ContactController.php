@@ -17,29 +17,40 @@ class ContactController extends AbstractController
 {
     #[Route('/contact', name: 'app_contact', methods: ['GET', 'POST'])]
     #[IsGranted('IS_AUTHENTICATED_FULLY', message: 'Vous devez être connecté pour envoyer un message.')]
-    public function index(
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
+    public function index(Request $request, EntityManagerInterface $em): Response
+    {
         /** @var User $user */
         $user = $this->getUser();
 
         $contactMessage = new ContactMessage();
+        $contactMessage->setType(ContactMessage::TYPE_CONTACT);
 
-        $form = $this->createForm(ContactMessageType::class, $contactMessage);
+        $form = $this->createForm(ContactMessageType::class, $contactMessage, [
+            'default_user' => $user,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($contactMessage->getType() === ContactMessage::TYPE_CONTACT) {
+                $contactMessage->setRating(null);
+            }
+
+            if ($contactMessage->getType() !== ContactMessage::TYPE_LEVEL) {
+                $contactMessage->setReportedUser(null);
+                $contactMessage->setReportedPlayerName(null);
+                $contactMessage->setReportedPlayerPhone(null);
+                $contactMessage->setReportedCurrentLevel(null);
+                $contactMessage->setReportedSuggestedLevel(null);
+            }
+
             $contactMessage->setUser($user);
             $contactMessage->setCreatedAt(new \DateTimeImmutable());
+            $contactMessage->setStatus(ContactMessage::STATUS_NEW);
 
             $em->persist($contactMessage);
             $em->flush();
 
-            $this->addFlash(
-                'success',
-                'Merci ! Votre message a bien été envoyé. Nous vous répondrons rapidement.'
-            );
+            $this->addFlash('success', 'Merci ! Votre message a bien été envoyé. Nous vous répondrons rapidement.');
 
             return $this->redirectToRoute('app_contact');
         }
@@ -56,10 +67,7 @@ class ContactController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
-        $messages = $repository->findBy(
-            ['user' => $user],
-            ['createdAt' => 'DESC']
-        );
+        $messages = $repository->findBy(['user' => $user], ['createdAt' => 'DESC']);
 
         return $this->render('contact/my_messages.html.twig', [
             'messages' => $messages,
