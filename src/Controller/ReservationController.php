@@ -16,7 +16,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class ReservationController extends AbstractController
 {
-    // ── 1. Affiche la page HTML ──────────────────────────────────────────
+    
     #[Route('/reservation', name: 'app_reservation', methods: ['GET'])]
     public function index(CourtRepository $courtRepository, EntityManagerInterface $entityManager): Response
     {

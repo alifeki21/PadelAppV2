@@ -287,19 +287,32 @@ function updateTimeSlots() {
     
     slotGrid.innerHTML = '';
     
+    const now = new Date();
+    // Date locale (pas UTC)
+    const todayStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+    const isToday = reservationState.selectedDate === todayStr;
+    
     for (let hour = 8; hour <= 22; hour += 1.5) {
         const startHour = Math.floor(hour);
         const startMinute = (hour % 1) * 60;
         const timeString = `${startHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')}:00`;
         const displayTime = `${startHour.toString().padStart(2, '0')}:${startMinute.toString().padStart(2, '0')}`;
         
-        const slot = document.createElement('div');
-        slot.className = 'time-slot';
-        slot.textContent = displayTime;
-
         if (bookedSlots.includes(displayTime)) {
             continue;
         }
+
+        if (isToday) {
+            const slotDate = new Date();
+            slotDate.setHours(startHour, startMinute, 0, 0);
+            if (slotDate <= now) {
+                continue;
+            }
+        }
+        
+        const slot = document.createElement('div');
+        slot.className = 'time-slot';
+        slot.textContent = displayTime;
         
         if (reservationState.selectedTime === timeString) {
             slot.classList.add('selected');
