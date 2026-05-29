@@ -60,8 +60,8 @@
                         </div>
                     </div>
                 {% else %}
-                    <p>Aucun tournoi disponible dans la base de données. Affichez les tournois statiques ci-dessous :</p>
-                    {# Fallback static tournaments to ensure the page is never empty #}
+                    <p>Aucun tournoi disponible pour le moment </p>
+                    <!--
                     <div class="tournament-card">
                         <div class="tournament-image">
                             <img src="{{ asset('images/tournois_hello.jpg') }}" alt="Tournoi Hello Padel">
@@ -80,11 +80,11 @@
                                 <a href="{{ path('app_tournaments_inscription') }}" class="btn-register">S'inscrire</a>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 {% endfor %}
             </div>
         </section>
-
+<!--
         <section class="brackets-section">
             <h2><i class="fas fa-diagram-project"></i> Tableaux des Tournois</h2>
             
@@ -232,5 +232,6 @@
                 </div>
             </div>
         </section>
+        -->
     </main>
 {% endblock %}
