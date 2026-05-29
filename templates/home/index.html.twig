@@ -50,9 +50,12 @@
 
     <section class="tournois-section container mt-5">
         <h2 class="section-title">Prochains Tournois</h2>
-        <div class="tournoi-cta">
-            <p>Participez à nos tournois et défiez les meilleurs joueurs.</p>
-            <a href="{{ path('app_tournaments_inscription') }}" class="btn-tournoi">S'inscrire</a>
+        <div class="tournoi-cta" style="background-image: url('{{ asset('images/tournois_hello.jpg') }}');">
+            <div class="tournoi-cta_overlay">
+                <h3>Prêt à relever le défi ?</h3>
+                <p>Participez à nos tournois et défiez les meilleurs joueurs.</p>
+                <a href="{{ path('app_tournaments_inscription') }}" class="btn-tournoi">S'inscrire</a>
+            </div>
         </div>
     </section>
 
